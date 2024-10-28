@@ -20,8 +20,8 @@ df = pd.DataFrame(data)
 df.set_index('category', inplace=True)
 df.index.name = None
 print(df)
-
-#podp 2
+#display
+# #podp 2
 
 stats = {}
 for column in file_data.columns[1:]:
@@ -45,4 +45,45 @@ print(df)
 #podp3
 
 sns.barplot(x='category', y='count', data=data)
+plt.show()
+
+#pod4
+fig, axes = plt.subplots(nrows = 4, ncols = 2, figsize = (10, 10))
+
+axes = axes.flatten()
+palette = sns.color_palette("viridis",len( file_data.columns))
+for i, column in enumerate(file_data.columns[1:]):
+    axes[i].hist(file_data[column], bins=50, color = palette[i])
+    axes[i].set_title(column)
+
+plt.tight_layout()
+plt.show()
+
+# pod5
+fig, axes = plt.subplots(nrows = 14, ncols = 2,figsize = (100, 100))
+
+axes = axes.flatten()
+count=0
+for i, column_i in enumerate(file_data.columns[1:]):
+    for j, column_j in enumerate(file_data.columns[2+i:], start=i+1):
+        print(column_i, column_j, count, i ,j)
+        sns.scatterplot(x=file_data[column_i], y=file_data[column_j], hue=file_data[column_i], ax=axes[count])
+        axes[count].set_title(f'{column_i} vs {column_j}')
+        count += 1
+plt.show()
+
+#pod6
+
+df_corr = pd.DataFrame(file_data.iloc[:, 1:]).corr()
+print(df_corr)
+
+#pod7
+plt.figure(figsize=(10, 10))
+sns.heatmap(df_corr, cmap='viridis')
+plt.title('Correlation heatmap')
+plt.show()
+
+#pod8
+sns.regplot(x='Length', y='Diameter', data=file_data,scatter_kws={'s': 10},ci=None)
+plt.title('Regression plot')
 plt.show()
