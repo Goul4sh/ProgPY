@@ -20,8 +20,8 @@ df = pd.DataFrame(data)
 df.set_index('category', inplace=True)
 df.index.name = None
 print(df)
-#display
-# #podp 2
+# display
+#podp 2
 
 stats = {}
 for column in file_data.columns[1:]:
@@ -87,3 +87,43 @@ plt.show()
 sns.regplot(x='Length', y='Diameter', data=file_data,scatter_kws={'s': 10},ci=None)
 plt.title('Regression plot')
 plt.show()
+
+# pod2.2
+
+summary_stats = []
+
+# Obliczamy statystyki dla każdej kolumny liczbowej, grupując według 'sex'
+for col in file_data.columns[1:]:
+    stats = file_data.groupby('sex')[col].agg(
+        mean='mean',
+        std='std',
+        min='min',
+        q1=lambda x: x.quantile(0.25),
+        q2='median',
+        q3=lambda x: x.quantile(0.75),
+        max='max',
+
+    ).reset_index()
+
+    # Dodajemy statystyki do listy
+    for _, row in stats.iterrows():
+        summary_stats.append({
+            'Feature': col,
+            'Sex': row['sex'],
+            'mean': row['mean'],
+            'std': row['std'],
+            'min': row['min'],
+            '25%': row['q1'],
+            '50%': row['q2'],
+            '75%': row['q3'],
+            'max': row['max']
+        })
+
+# Konwertujemy listę do DataFrame
+summary_df = pd.DataFrame(summary_stats)
+
+# Przekształcamy dane do pożądanej struktury
+summary_df = summary_df.set_index(['Feature', 'Sex'])
+
+# Wyświetlenie wyników
+print(summary_df)
