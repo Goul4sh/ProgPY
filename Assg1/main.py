@@ -92,7 +92,6 @@ plt.show()
 
 summary_stats = []
 
-# Obliczamy statystyki dla każdej kolumny liczbowej, grupując według 'sex'
 for col in file_data.columns[1:]:
     stats = file_data.groupby('sex')[col].agg(
         mean='mean',
@@ -105,7 +104,6 @@ for col in file_data.columns[1:]:
 
     ).reset_index()
 
-    # Dodajemy statystyki do listy
     for _, row in stats.iterrows():
         summary_stats.append({
             'Feature': col,
@@ -119,11 +117,13 @@ for col in file_data.columns[1:]:
             'max': row['max']
         })
 
-# Konwertujemy listę do DataFrame
 summary_df = pd.DataFrame(summary_stats)
-
-# Przekształcamy dane do pożądanej struktury
 summary_df = summary_df.set_index(['Feature', 'Sex'])
 
-# Wyświetlenie wyników
 print(summary_df)
+
+#pd2.3
+for name in file_data.columns[1:]:
+    plot123 = file_data.boxplot(column=name, by='sex')
+    plot123.set_title('Box plot')
+    plt.show()
