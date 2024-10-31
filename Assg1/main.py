@@ -123,7 +123,11 @@ summary_df = summary_df.set_index(['Feature', 'Sex'])
 print(summary_df)
 
 #pd2.3
-for name in file_data.columns[1:]:
-    plot123 = file_data.boxplot(column=name, by='sex')
-    plot123.set_title('Box plot')
-    plt.show()
+
+fig, axes = plt.subplots(nrows = 4, ncols = 2,figsize = (20, 20))
+axes = axes.flatten()
+for i, name in enumerate( file_data.columns[1:]):
+    plot123 = file_data.boxplot(column=name, by='sex', ax=axes[i])
+    plot123.set_title(name)
+
+plt.show()
