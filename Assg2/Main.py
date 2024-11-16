@@ -1,22 +1,14 @@
 from Assg2.Meadow import Meadow
-from Assg2.Wolf import Wolf
-from Assg2.Sheep import Sheep
 
 
 def main():
-    meadow = Meadow(sheep_count=5, wolf_count=2)
-
-    print("Pozycja początkowa:")
-    for animal_info in meadow.get_all_positions():
-        print(animal_info)
-
-    print("Pozycja po ruchu:")
-    for animal in meadow.animals:
-        meadow.move_animal(animal, 1, 1)
-
-    for animal_info in meadow.get_all_positions():
-        print(animal_info)
-
+    meadow = Meadow(15, 50)
+    while meadow.start_simulation():
+        print(
+            f"Runda {meadow.get_status()['runda']} - Liczba pozostałych owiec na łące: "
+            f"{meadow.get_status()['liczba_owiec']} - Pozycja wilka: "
+            f"{meadow.get_status()['pozycja_wilka']}")
+    print("Symulacja zakończona.")
 
 
 if __name__ == "__main__":
