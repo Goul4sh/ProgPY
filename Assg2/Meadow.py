@@ -1,3 +1,4 @@
+import csv
 import json
 import os
 
@@ -8,16 +9,24 @@ import math
 
 
 class Meadow:
-    def __init__(self, sheep_count, max_rounds, filename="pos.json"):
+    def __init__(self, sheep_count, max_rounds, filename="pos.json", alive_csv="alive.csv"):
         self.sheep = []
         self.max_rounds = max_rounds
         self.rounds = 0
         self._create_sheep(sheep_count)
         self.filename = filename
+        self.alive_csv = alive_csv
         self.wolf = Wolf(0.0, 0.0)
 
         if os.path.exists(self.filename):
             os.remove(self.filename)
+
+        with open(self.alive_csv, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Round', 'Alive sheep'])
+
+    def count_alive_sheep(self):
+        return sum(1 for sheep in self.sheep if sheep is not None and sheep.alive)
 
     def _create_sheep(self, sheep_count):
         for i in range(1, sheep_count + 1):
@@ -52,6 +61,7 @@ class Meadow:
             self.sheep[self.sheep.index(sheep_to_eat)] = None
 
         self.save_positions()
+        self.save_alive_sheep_count()
 
         return True
 
@@ -97,9 +107,14 @@ class Meadow:
                 if lines:
                     lines[-1] = lines[-1].rstrip()
                     lines.append("\n]")
-
                     file.seek(0)
                     file.writelines(lines)
+
+    def save_alive_sheep_count(self):
+        alive_sheep = self.count_alive_sheep()
+        with open(self.alive_csv, mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow([f"{self.rounds:<10}", f"{alive_sheep:<10}"])
 
     def get_status(self):
         alive_sheep_count = sum(1 for sheep in self.sheep if sheep is not None and sheep.alive)

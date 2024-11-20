@@ -3,3 +3,4 @@
 /.venv/
 /Assg2/__pycache__
 *.json
+*.csv
