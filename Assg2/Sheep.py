@@ -4,9 +4,16 @@ import random
 
 class Sheep(Animal):
     def __init__(self, pos_x, pos_y, sheep_id, move_distance=0.5):
-        super().__init__(round(pos_x, 1), round(pos_y, 1))
+        super().__init__(pos_x, pos_y)
         self.move_distance = move_distance
         self.sheep_id = sheep_id
+        self.alive = True
+
+    def get_position_to_json(self):
+        if self.alive:
+            return {"ID": self.sheep_id, "x": self.pos_x, "y": self.pos_y}
+        else:
+            return None
 
     def move_randomly(self):
         direction = random.choice(["north", "south", "east", "west"])

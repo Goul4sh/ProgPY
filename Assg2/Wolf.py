@@ -9,14 +9,12 @@ class Wolf(Animal):
 
     def chase(self, sheep):
         delta_x = sheep.pos_x - self.pos_x
-        x = round(delta_x, 1)
         delta_y = sheep.pos_y - self.pos_y
-        y = round(delta_y, 1)
-        distance = round(math.sqrt(x ** 2 + y ** 2), 1)
+        distance = math.sqrt(delta_x ** 2 + delta_y ** 2)
 
         print(
             f"Ścigam owcę numer ({sheep.sheep_id}) na pozycji ({round(sheep.pos_x, 1)}, "
-            f"{round(sheep.pos_y, 1)}), dystans: {distance}, zasięg wilka: {self.move_distance}")
+            f"{round(sheep.pos_y, 1)}), dystans: {round(distance, 1)}, zasięg wilka: {self.move_distance}")
 
         if distance <= self.move_distance:
             self.pos_x = sheep.pos_x
@@ -26,7 +24,8 @@ class Wolf(Animal):
         else:
             move_x = delta_x / distance * self.move_distance
             move_y = delta_y / distance * self.move_distance
-            changed_pos_x = round(move_x, 1)
-            changed_pos_y = round(move_y, 1)
-            self.move(changed_pos_x, changed_pos_y)
+            self.move(move_x, move_y)
             return False
+
+    def get_position_to_json(self):
+        return {"x": self.pos_x, "y": self.pos_y}
