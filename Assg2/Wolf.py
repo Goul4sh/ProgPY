@@ -13,13 +13,13 @@ class Wolf(Animal):
         distance = math.sqrt(delta_x ** 2 + delta_y ** 2)
 
         print(
-            f"Ścigam owcę numer ({sheep.sheep_id}) na pozycji ({round(sheep.pos_x, 1)}, "
-            f"{round(sheep.pos_y, 1)}), dystans: {round(distance, 1)}, zasięg wilka: {self.move_distance}")
+            f"Chasing wolf number ({sheep.sheep_id}) on position ({round(sheep.pos_x, 1)}, "
+            f"{round(sheep.pos_y, 1)}), distance: {round(distance, 1)}, wolf's range: {self.move_distance}")
 
         if distance <= self.move_distance:
             self.pos_x = sheep.pos_x
             self.pos_y = sheep.pos_y
-            print(f"Owca numer ({sheep.sheep_id}) została zjedzona")
+            print(f"Sheep number ({sheep.sheep_id}) has been eaten")
             return True
         else:
             move_x = delta_x / distance * self.move_distance

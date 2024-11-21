@@ -119,7 +119,7 @@ class Meadow:
     def get_status(self):
         alive_sheep_count = sum(1 for sheep in self.sheep if sheep is not None and sheep.alive)
         return {
-            "runda": self.rounds,
-            "liczba_owiec": alive_sheep_count,
-            "pozycja_wilka": self.wolf.get_position()
+            "round": self.rounds,
+            "sheep_count": alive_sheep_count,
+            "wolf_position": self.wolf.get_position()
         }

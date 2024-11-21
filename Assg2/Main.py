@@ -5,10 +5,10 @@ def main():
     meadow = Meadow(15, 50)
     while meadow.start_simulation():
         print(
-            f"Runda {meadow.get_status()['runda']} - Liczba pozostałych owiec na łące: "
-            f"{meadow.get_status()['liczba_owiec']} - Pozycja wilka: "
-            f"{meadow.get_status()['pozycja_wilka']}")
-    print("Symulacja zakończona.")
+            f"Round {meadow.get_status()['round']} - Sheeps left on the meadow: "
+            f"{meadow.get_status()['sheep_count']} - Wolf position: "
+            f"{meadow.get_status()['wolf_position']}")
+    print("Simulation finished.")
 
 
 if __name__ == "__main__":
