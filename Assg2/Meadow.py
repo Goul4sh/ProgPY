@@ -1,22 +1,27 @@
 import csv
 import json
+import logging
 import os
 
-from Assg2.Sheep import Sheep
-from Assg2.Wolf import Wolf
+from Sheep import Sheep
+from Wolf import Wolf
 import random
 import math
 
 
 class Meadow:
-    def __init__(self, sheep_count, max_rounds, filename="pos.json", alive_csv="alive.csv"):
+    def __init__(self, sheep_count, max_rounds, sheep_pos_limit=10.0, sheep_move_dist=0.5, wolf_move_dist=1.0,
+                 filename="pos.json", alive_csv="alive.csv"):
         self.sheep = []
         self.max_rounds = max_rounds
         self.rounds = 0
-        self._create_sheep(sheep_count)
         self.filename = filename
         self.alive_csv = alive_csv
-        self.wolf = Wolf(0.0, 0.0)
+        self.sheep_pos_limit = sheep_pos_limit
+        self.sheep_move_dist = sheep_move_dist
+        self.wolf_move_dist = wolf_move_dist
+        self.wolf = Wolf(0.0, 0.0, wolf_move_dist)
+        self._create_sheep(sheep_count)
 
         if os.path.exists(self.filename):
             os.remove(self.filename)
@@ -30,16 +35,26 @@ class Meadow:
 
     def _create_sheep(self, sheep_count):
         for i in range(1, sheep_count + 1):
-            pos_x = random.uniform(-10.0, 10.0)
-            pos_y = random.uniform(-10.0, 10.0)
-            sheep = Sheep(pos_x, pos_y, i)
+            pos_x = random.uniform(-self.sheep_pos_limit, self.sheep_pos_limit)
+            pos_y = random.uniform(-self.sheep_pos_limit, self.sheep_pos_limit)
+            sheep = Sheep(pos_x, pos_y, i, self.sheep_move_dist, self.sheep_pos_limit)
             self.sheep.append(sheep)
+            logging.debug(f"Sheep ({sheep.sheep_id}) position ({sheep.pos_x: .3f}, "
+                          f"{sheep.pos_y: .3f}) determined")
+        logging.info("All sheep positions have been initialized")
 
     def start_simulation(self):
-        if self.rounds >= self.max_rounds or all(sheep is None for sheep in self.sheep):
+        if self.rounds >= self.max_rounds:
+            logging.info("Simulation ended with max rounds being achieved")
+            return False
+
+        if all(sheep is None for sheep in self.sheep):
+            logging.info("Simulation ended with all sheep dead")
             return False
 
         self.rounds += 1
+
+        logging.info(f"round started {self.rounds}")
 
         for sheep in self.sheep:
             if sheep is not None and sheep.alive:
@@ -59,21 +74,24 @@ class Meadow:
         if sheep_to_eat and self.wolf.chase(sheep_to_eat):
             sheep_to_eat.alive = False
             self.sheep[self.sheep.index(sheep_to_eat)] = None
+            logging.info(f"Sheep {sheep_to_eat.sheep_id} has been eaten")
 
         self.save_positions()
         self.save_alive_sheep_count()
+        alive_sheep_count = self.count_alive_sheep()
+        logging.info(f"Number of alive sheep before the end of round {self.rounds}: {alive_sheep_count}")
 
         return True
 
     @staticmethod
-    def move_animal(animal, delta_x, delta_y):
+    def move_animal(self, animal, delta_x, delta_y):
 
         if isinstance(animal, Sheep):
-            delta_x *= 0.5
-            delta_y *= 0.5
+            delta_x *= self.sheep_move_dist
+            delta_y *= self.sheep_move_dist
         elif isinstance(animal, Wolf):
-            delta_x *= 1.0
-            delta_y *= 1.0
+            delta_x *= self.wolf_move_dist
+            delta_y *= self.wolf_move_dist
 
         animal.pos_x += delta_x
         animal.pos_y += delta_y
@@ -109,12 +127,14 @@ class Meadow:
                     lines.append("\n]")
                     file.seek(0)
                     file.writelines(lines)
+        logging.debug(f"Saved informations to {self.filename} for round {self.rounds}")
 
     def save_alive_sheep_count(self):
         alive_sheep = self.count_alive_sheep()
         with open(self.alive_csv, mode='a', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow([f"{self.rounds:<10}", f"{alive_sheep:<10}"])
+        logging.debug(f"Saved informations to {self.alive_csv} for round {self.rounds}")
 
     def get_status(self):
         alive_sheep_count = sum(1 for sheep in self.sheep if sheep is not None and sheep.alive)

@@ -12,7 +12,7 @@ class Animal:
         self.pos_y += delta_y
 
     def get_position(self):
-        return round(self.pos_x, 1), round(self.pos_y, 1)
+        return self.pos_x, self.pos_y
 
     def get_position_to_json(self):
         return {
