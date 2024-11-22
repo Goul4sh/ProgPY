@@ -29,6 +29,7 @@ class Wolf(Animal):
             self.pos_x = sheep.pos_x
             self.pos_y = sheep.pos_y
             print(f"Sheep number ({sheep.sheep_id}) has been eaten")
+            logging.debug(f"Sheep number ({sheep.sheep_id}) has been eaten on position  ({sheep.pos_x: .3f}, {sheep.pos_y: .3f})")
             return True
         else:
             move_x = delta_x / distance * self.move_distance
