@@ -23,8 +23,12 @@ def parse_arguments():
 
 def setup_logging(log_level=None):
     if os.path.exists("chase.log"):
-        os.remove("chase.log")
-        print("Existing log file 'chase.log' removed.")
+        try:
+            os.remove("chase.log")
+            print("Existing log file 'chase.log' removed.")
+        except OSError as e:
+            logging.critical(f"Failed to remove existing log file 'chase.log': {e}")
+            sys.exit(1)
 
     if log_level:
         print(log_level)
@@ -40,6 +44,7 @@ def load_config(file_path=None):
             config.read(file_path)
             if not config.sections():
                 print(f"Config file '{file_path}' is empty or invalid. Using default values.")
+                logging.warning(f"Config file '{file_path}' is empty or invalid. Default values will be used.")
             else:
                 logging.debug(f"Configuration loaded from '{file_path}'.")
                 for section in config.sections():
@@ -47,8 +52,10 @@ def load_config(file_path=None):
                         logging.debug(f"Loaded [{section}] {key} = {value}")
         except FileNotFoundError:
             print(f"Config file '{file_path}' not found. Using default values.")
+            logging.warning(f"Config file '{file_path}' not found. Default values will be used.")
         except configparser.Error as error:
             print(f"Error reading config file: {error}")
+            logging.critical(f"Critical error while reading config file '{file_path}': {error}")
             sys.exit(1)
     else:
         config["Sheep"] = {
@@ -79,7 +86,14 @@ def main():
         wolf_move_dist = float(config.get("Wolf", "MoveDist", fallback=1.0))
 
         sheep_count = args.sheep if args.sheep is not None else int(config.get("Settings", "sheep_count", fallback=15))
+        if args.sheep is None:
+            logging.warning("Sheep count not provided. Using default value: 15.")
         max_rounds = args.rounds if args.rounds is not None else int(config.get("Settings", "max_rounds", fallback=50))
+        if args.rounds is None:
+            logging.warning("Max rounds not provided. Using default value: 50.")
+        logging.info(f"Simulation starting with {sheep_count} sheep and maximum rounds of {max_rounds}.")
+        print(f"Simulation starting with {sheep_count} sheep and maximum rounds of {max_rounds}.")
+
     except KeyError as e:
         logging.error(f"Missing configuration value: {e}")
         sys.exit(1)
