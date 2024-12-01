@@ -5,7 +5,7 @@ import math
 
 
 class Wolf(Animal):
-    def __init__(self, pos_x, pos_y, move_distance=1.0):
+    def __init__(self, pos_x, pos_y, move_distance):
         super().__init__(pos_x, pos_y)
         self.move_distance = move_distance
 

@@ -10,7 +10,7 @@ import math
 
 
 class Meadow:
-    def __init__(self, sheep_count, max_rounds, sheep_pos_limit=10.0, sheep_move_dist=0.5, wolf_move_dist=1.0,
+    def __init__(self, sheep_count, max_rounds, sheep_pos_limit, sheep_move_dist, wolf_move_dist,
                  filename="pos.json", alive_csv="alive.csv"):
         self.sheep = []
         self.max_rounds = max_rounds
@@ -44,12 +44,12 @@ class Meadow:
         logging.info("All sheep positions have been initialized")
 
     def start_simulation(self):
-        if self.rounds >= self.max_rounds:
-            logging.info("Simulation ended with max rounds being achieved")
-            return False
-
         if all(sheep is None for sheep in self.sheep):
             logging.info("Simulation ended with all sheep dead")
+            return False
+
+        if self.rounds >= self.max_rounds:
+            logging.info("Simulation ended with max rounds being achieved")
             return False
 
         self.rounds += 1

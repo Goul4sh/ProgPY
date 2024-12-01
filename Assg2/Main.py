@@ -85,7 +85,7 @@ def main():
         sys.exit(1)
 
     if sheep_pos_limit < 0 or sheep_move_dist < 0 or wolf_move_dist < 0:
-        logging.error(f"Missing configuration value: {e}")
+        logging.error("Configuration value must be positive")
         sys.exit(1)
 
     meadow = Meadow(sheep_count, max_rounds, sheep_pos_limit, sheep_move_dist, wolf_move_dist)

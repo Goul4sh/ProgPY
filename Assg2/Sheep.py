@@ -5,7 +5,7 @@ import random
 
 
 class Sheep(Animal):
-    def __init__(self, pos_x, pos_y, sheep_id, move_distance=0.5, sheep_pos_limit=10):
+    def __init__(self, pos_x, pos_y, sheep_id, move_distance, sheep_pos_limit):
         super().__init__(pos_x, pos_y)
         self.move_distance = move_distance
         self.sheep_id = sheep_id
