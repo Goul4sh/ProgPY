@@ -18,7 +18,18 @@ def parse_arguments():
     parser.add_argument("-l", "--log", type=str, default=None,
                         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
                         help="Set the logging level (default: NONE).")
-    return parser.parse_args()
+
+    args = parser.parse_args()
+
+    if args.sheep is not None and args.sheep <= 0:
+        print("Error: The number of sheep must be greater than zero.")
+        sys.exit(1)
+
+    if args.rounds is not None and args.rounds <= 0:
+        print("Error: The maximum number of rounds must be greater than zero.")
+        sys.exit(1)
+
+    return args
 
 
 def setup_logging(log_level=None):
