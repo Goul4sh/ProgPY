@@ -21,8 +21,3 @@ class Animal:
                 "y": self.pos_y
             }
         }
-
-    @staticmethod
-    def save_positions(animals: List['Animal'], filename):
-        with open(filename, 'w', encoding='utf-8') as file:
-            json.dump([animal.get_position_to_json() for animal in animals], file, indent=4)
