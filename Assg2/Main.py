@@ -19,7 +19,11 @@ def parse_arguments():
                         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
                         help="Set the logging level (default: NONE).")
 
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except SystemExit:
+        print("Invalid argument")
+        sys.exit(1)
 
     if args.sheep is not None and args.sheep <= 0:
         print("Error: The number of sheep must be greater than zero.")

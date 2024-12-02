@@ -83,19 +83,6 @@ class Meadow:
 
         return True
 
-    @staticmethod
-    def move_animal(self, animal, delta_x, delta_y):
-
-        if isinstance(animal, Sheep):
-            delta_x *= self.sheep_move_dist
-            delta_y *= self.sheep_move_dist
-        elif isinstance(animal, Wolf):
-            delta_x *= self.wolf_move_dist
-            delta_y *= self.wolf_move_dist
-
-        animal.pos_x += delta_x
-        animal.pos_y += delta_y
-
     def save_positions(self):
         data = {
             "round_no": self.rounds,
