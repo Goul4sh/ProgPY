@@ -22,7 +22,10 @@ class Sheep(Animal):
         super().move(delta_x, delta_y)
         logging.debug(f"Sheep {self.sheep_id} moved to position ({self.pos_x: .3f}, {self.pos_y: .3f})")
 
-    def move_randomly(self):
+    def move_randomly(self, attempts=0):
+        if attempts >= 10:
+            logging.warning(f"Sheep ({self.sheep_id}) failed to move after 10 attempts.")
+            return
         direction = random.choice(["north", "south", "east", "west"])
         logging.debug(f"Sheep ({self.sheep_id}) chose {direction}")
         if direction == "north" and self.pos_y + self.move_distance <= self.sheep_pos_limit:
@@ -34,4 +37,4 @@ class Sheep(Animal):
         elif direction == "west" and self.pos_x - self.move_distance >= -self.sheep_pos_limit:
             self.move(-self.move_distance, 0)
         else:
-            self.move_randomly()
+            self.move_randomly(attempts+1)

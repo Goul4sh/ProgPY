@@ -96,9 +96,23 @@ def main():
     config = load_config(args.config)
 
     try:
-        sheep_pos_limit = float(config.get("Sheep", "InitPosLimit", fallback=10.0))
-        sheep_move_dist = float(config.get("Sheep", "MoveDist", fallback=0.5))
-        wolf_move_dist = float(config.get("Wolf", "MoveDist", fallback=1.0))
+        try:
+            sheep_pos_limit = float(config.get("Sheep", "InitPosLimit", fallback=10.0))
+        except ValueError:
+            logging.error("Invalid value for InitPosLimit in config file, default value: 10.0 will be used.")
+            sheep_pos_limit = 10.0
+
+        try:
+            sheep_move_dist = float(config.get("Sheep", "MoveDist", fallback=0.5))
+        except ValueError:
+            logging.error("Invalid value for Sheep's MoveDist in config file, default value: 0.5 will be used.")
+            sheep_move_dist = 0.5
+
+        try:
+            wolf_move_dist = float(config.get("Wolf", "MoveDist", fallback=1.0))
+        except ValueError:
+            logging.error("Invalid value for Wolf's MoveDist in config file, default value: 1.0 will be used.")
+            wolf_move_dist = 1.0
 
         sheep_count = args.sheep if args.sheep is not None else int(config.get("Settings", "sheep_count", fallback=15))
         if args.sheep is None:
@@ -106,8 +120,6 @@ def main():
         max_rounds = args.rounds if args.rounds is not None else int(config.get("Settings", "max_rounds", fallback=50))
         if args.rounds is None:
             logging.warning("Max rounds not provided. Using default value: 50.")
-        logging.info(f"Simulation starting with {sheep_count} sheep and maximum rounds of {max_rounds}.")
-        print(f"Simulation starting with {sheep_count} sheep and maximum rounds of {max_rounds}.")
 
     except KeyError as e:
         logging.error(f"Missing configuration value: {e}")
@@ -118,6 +130,8 @@ def main():
         sys.exit(1)
 
     meadow = Meadow(sheep_count, max_rounds, sheep_pos_limit, sheep_move_dist, wolf_move_dist)
+    logging.info(f"Simulation starting with {sheep_count} sheep and maximum rounds of {max_rounds}.")
+    print(f"Simulation starting with {sheep_count} sheep and maximum rounds of {max_rounds}.")
     while meadow.start_simulation():
         status = meadow.get_status()
         round_number = status['round']
