@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}
+index file
+{% endblock %}
+{% block content %}
+	<h1>indeksowo</h1>
+
+    {% for seed in seeds  %}
+    	<li>{{seed}}</li>
+    {% endfor %}
+
+{% endblock %}
