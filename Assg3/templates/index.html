@@ -1,12 +1,16 @@
-{% extends "base.html" %}
+{#{% extends "base.html" %}#}
 {% block title %}
 index file
 {% endblock %}
 {% block content %}
-	<h1>indeksowo</h1>
-
-    {% for seed in seeds  %}
-    	<li>{{seed}}</li>
-    {% endfor %}
-
+	<h1>6764476</h1>
+    {% if seeds %}
+    <ol>
+        {% for seed in seeds  %}
+            <li>{{seed}}</li>
+        {% endfor %}
+    </ol>
+    {%  else %}
+    <p>No seeds found</p>
+    {% endif %}
 {% endblock %}

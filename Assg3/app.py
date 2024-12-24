@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -5,6 +7,17 @@ from flask_migrate import Migrate
 app = Flask(__name__)
 
 db = SQLAlchemy()
+
+
+def apply_migrations():
+    from flask_migrate import init, migrate, upgrade
+
+    migrations_dir = os.path.join(os.getcwd(), "migrations")
+    if not os.path.exists(migrations_dir):
+        init()
+    migrate(message="Automated migration update")
+    upgrade()
+
 
 def create_app():
     app = Flask(__name__, template_folder='templates')
@@ -20,6 +33,7 @@ def create_app():
         try:
             db.create_all()
             db.session.commit()
+            apply_migrations()
         except Exception as e:
             print(e)
     return app
