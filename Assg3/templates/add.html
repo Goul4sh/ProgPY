@@ -1,39 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Seed</title>
-</head>
-<body>
-    <h1>Add a New Seed</h1>
-    <form method="POST" action="{{ url_for('add') }}">
-        <label for="area">Area:</label>
-        <input type="text" id="area" name="area" required value="{{ request.form.get('area', '') }}"><br><br>
-        
-        <label for="perimeter">Perimeter:</label>
-        <input type="text" id="perimeter" name="perimeter" required value="{{ request.form.get('perimeter', '') }}"><br><br>
-        
-        <label for="compactness">Compactness:</label>
-        <input type="text" id="compactness" name="compactness" required value="{{ request.form.get('compactness', '') }}"><br><br>
-        
-        <label for="kernel_length">Kernel Length:</label>
-        <input type="text" id="kernel_length" name="kernel_length" required value="{{ request.form.get('kernel_length', '') }}"><br><br>
-        
-        <label for="kernel_width">Kernel Width:</label>
-        <input type="text" id="kernel_width" name="kernel_width" required value="{{ request.form.get('kernel_width', '') }}"><br><br>
-        
-        <label for="asymmetry_coefficient">Asymmetry Coefficient:</label>
-        <input type="text" id="asymmetry_coefficient" name="asymmetry_coefficient" required value="{{ request.form.get('asymmetry_coefficient', '') }}"><br><br>
-        
-        <label for="kernel_groove_length">Kernel Groove Length:</label>
-        <input type="text" id="kernel_groove_length" name="kernel_groove_length" required value="{{ request.form.get('kernel_groove_length', '') }}"><br><br>
-
-        <label for="seed_class">Seed Class:</label>
-        <input type="text" id="seed_class" name="seed_class" required value="{{ request.form.get('seed_class', '') }}"><br><br>
-
-
-        <button type="submit">Add Seed</button>
+{% extends "base.html" %}
+{% block title %}Add Record{% endblock %}
+{% block content %}
+    <h1>Add a New Record</h1>
+    <form action="/add" method="POST">
+        <label>Area:</label>
+        <label>
+            <input type="number" name="area" required>
+        </label><br>
+        <label>Perimeter:</label>
+        <label>
+            <input type="number" name="perimeter" required>
+        </label><br>
+        <label>Compactness:</label>
+        <label>
+            <input type="number" name="compactness" required>
+        </label><br>
+        <label>Kernel Length:</label>
+        <label>
+            <input type="number" name="kernel_length" required>
+        </label><br>
+        <label>Kernel Width:</label>
+        <label>
+            <input type="number" name="kernel_width" required>
+        </label><br>
+        <label>Asymmetry Coefficient:</label>
+        <label>
+            <input type="number" name="asymmetry_coefficient" required>
+        </label><br>
+        <label>Kernel Groove Length:</label>
+        <label>
+            <input type="number" name="kernel_groove_length" required>
+        </label><br>
+        <label>Seed Class:</label>
+        <label>
+            <input type="number" name="seed_class" required>
+        </label><br>
+        <button type="submit">Add Record</button>
     </form>
-</body>
-</html>
+{% endblock %}

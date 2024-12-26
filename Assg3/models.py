@@ -13,5 +13,15 @@ class Seed(db.Model):
     kernel_groove_length = db.Column(db.Float, nullable=False)
     seed_class = db.Column(db.Integer, nullable=False)
 
-    def __repr__(self):
-        return '<Seed {}>'.format(self.seed_id)
+    def to_dict(self):
+        return {
+            'seed_id': self.seed_id,
+            'area': self.area,
+            'perimeter': self.perimeter,
+            'compactness': self.compactness,
+            'kernel_length': self.kernel_length,
+            'kernel_width': self.kernel_width,
+            'asymmetry_coefficient': self.asymmetry_coefficient,
+            'kernel_groove_length': self.kernel_groove_length,
+            'seed_class': self.seed_class
+        }
