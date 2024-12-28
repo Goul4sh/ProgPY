@@ -1,8 +1,8 @@
-from os import abort
-
 import flask
+import numpy as np
 from flask import render_template, request, redirect, url_for, jsonify
 from models import Seed
+from knn import train_knn_model
 
 
 def register_routes(app, db):
@@ -84,9 +84,49 @@ def register_routes(app, db):
             db.session.commit()
             return redirect(url_for('index')), 200
 
-    @app.route('/predict')
+    @app.route('/predict', methods=['GET', 'POST'])
     def predict():
-        return render_template('predict.html')
+
+        if request.method == 'GET':
+            return render_template('predict.html')
+        if request.method == 'POST':
+
+            try:
+
+                features = [
+                    float(request.form['area']),
+                    float(request.form['perimeter']),
+                    float(request.form['compactness']),
+                    float(request.form['kernel_length']),
+                    float(request.form['kernel_width']),
+                    float(request.form['asymmetry_coefficient']),
+                    float(request.form['kernel_groove_length']),
+                ]
+
+                if features[0] < 0:
+                    raise ValueError("Area cannot be negative")
+                if features[1] < 0:
+                    raise ValueError("Perimeter cannot be negative")
+                if features[2] < 0:
+                    raise ValueError("Compactness cannot be negative")
+                if features[3] < 0:
+                    raise ValueError("Kernel length cannot be negative")
+                if features[4] < 0:
+                    raise ValueError("Kernel width cannot be negative")
+                if features[6] < 0:
+                    raise ValueError("Kernel groove length cannot be negative")
+
+            except (ValueError, KeyError):
+                flask.abort(400)
+
+            knn_model, scaler = train_knn_model()
+
+            features = np.array(features).reshape(1, -1)
+
+            features = scaler.transform(features)
+
+            prediction = knn_model.predict(features)[0]
+            return render_template('result.html', category=prediction)
 
     @app.route('/api/data', methods=['GET', 'POST'])
     def api_data():
@@ -148,7 +188,7 @@ def register_routes(app, db):
         else:
             flask.abort(400)
 
-    @app.route('/delete/<int:record_id>', methods=['DELETE'])
+    @app.route('/api/data/<int:record_id>', methods=['DELETE'])
     def api_delete(record_id):
 
         seed = Seed.query.get(record_id)
@@ -160,3 +200,44 @@ def register_routes(app, db):
             db.session.delete(seed)
             db.session.commit()
             return jsonify({'seed_id': seed.seed_id}), 200
+
+    @app.route('/api/predictions', methods=['GET'])
+    def api_predict():
+
+        try:
+            features = [
+                float(request.args['area']),
+                float(request.args['perimeter']),
+                float(request.args['compactness']),
+                float(request.args['kernel_length']),
+                float(request.args['kernel_width']),
+                float(request.args['asymmetry_coefficient']),
+                float(request.args['kernel_groove_length']),
+            ]
+
+            if features[0] < 0:
+                raise ValueError("Area cannot be negative")
+            if features[1] < 0:
+                raise ValueError("Perimeter cannot be negative")
+            if features[2] < 0:
+                raise ValueError("Compactness cannot be negative")
+            if features[3] < 0:
+                raise ValueError("Kernel length cannot be negative")
+            if features[4] < 0:
+                raise ValueError("Kernel width cannot be negative")
+            if features[6] < 0:
+                raise ValueError("Kernel groove length cannot be negative")
+
+            knn_model, scaler = train_knn_model()
+
+            features = scaler.transform(features)
+
+            prediction = knn_model.predict(features)[0]
+
+            return jsonify({"category": prediction})
+
+        except KeyError:
+            return jsonify({"error": "Missing required parameters"}), 400
+
+        except ValueError:
+            return jsonify({"error": "Invalid data"}), 400

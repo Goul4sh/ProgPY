@@ -1,6 +1,39 @@
 {% extends "base.html" %}
 {% block title %}Predict{% endblock %}
 {% block content %}
-    <h1>Predict</h1>
-    <p>Tsigma.</p>
+    <h1>Predict Seed Class</h1>
+
+    <form action="/predict" method="POST">
+        <label>Area:</label>
+        <label>
+            <input type="number" name="area" step="any" required>
+        </label><br>
+        <label>Perimeter:</label>
+        <label>
+            <input type="number" name="perimeter" step="any" required>
+        </label><br>
+        <label>Compactness:</label>
+        <label>
+            <input type="number" name="compactness" step="any" required>
+        </label><br>
+        <label>Kernel Length:</label>
+        <label>
+            <input type="number" name="kernel_length" step="any" required>
+        </label><br>
+        <label>Kernel Width:</label>
+        <label>
+            <input type="number" name="kernel_width" step="any" required>
+        </label><br>
+        <label>Asymmetry Coefficient:</label>
+        <label>
+            <input type="number" name="asymmetry_coefficient" step="any" required>
+        </label><br>
+        <label>Kernel Groove Length:</label>
+        <label>
+            <input type="number" name="kernel_groove_length" step="any" required>
+        </label><br>
+        <button type="submit">Predict</button>
+    </form>
+
+
 {% endblock %}
