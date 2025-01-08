@@ -1,6 +1,8 @@
 from app import db
 
+
 class Seed(db.Model):
+
     __tablename__ = 'seeds'
 
     seed_id = db.Column(db.Integer, primary_key=True)
