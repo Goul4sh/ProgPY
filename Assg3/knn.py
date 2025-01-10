@@ -7,7 +7,7 @@ import numpy as np
 def train_knn_model():
 
     seeds = Seed.query.all()
-    if not seeds:
+    if not seeds or len(seeds) < 3:
         return None, None
 
     X = np.array([[seed.area, seed.perimeter, seed.compactness, seed.kernel_length,

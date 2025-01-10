@@ -121,6 +121,9 @@ def register_routes(app, db):
 
             knn_model, scaler = train_knn_model()
 
+            if knn_model is None:
+                flask.abort(400)
+
             features = np.array(features).reshape(1, -1)
 
             features = scaler.transform(features)
@@ -230,11 +233,16 @@ def register_routes(app, db):
 
             knn_model, scaler = train_knn_model()
 
+            if knn_model is None:
+                return jsonify({'error': 'There are not enough records in the database for the prediction to complete.'}), 400
+
+            features = np.array(features).reshape(1, -1)
+
             features = scaler.transform(features)
 
             prediction = knn_model.predict(features)[0]
 
-            return jsonify({"category": prediction})
+            return jsonify({"category": int(prediction)})
 
         except KeyError:
             return jsonify({"error": "Missing required parameters"}), 400

@@ -21,7 +21,7 @@ def apply_migrations():
 
 def create_app():
     app = Flask(__name__, template_folder='templates')
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:haslo@localhost:5434/assgdb'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:haslo@localhost:5432/assgdb'
 
     db.init_app(app)
     migrate = Migrate(app, db)
@@ -34,7 +34,7 @@ def create_app():
             db.create_all()
             db.session.commit()
 
-            load_data_from_file('data/seeds.txt')
+            # load_data_from_file('data/seeds.txt')
 
             apply_migrations()
         except Exception as e:
