@@ -65,6 +65,7 @@ def register_routes(app, db):
 
             db.session.add(new_seed)
             db.session.commit()
+
             return redirect(url_for('index')), 200
 
 
@@ -122,7 +123,8 @@ def register_routes(app, db):
             knn_model, scaler = train_knn_model()
 
             if knn_model is None:
-                flask.abort(400)
+                return render_template('500.html',
+                                       response="There are not enough records in the database for the prediction to proceed."), 500
 
             features = np.array(features).reshape(1, -1)
 
@@ -234,7 +236,8 @@ def register_routes(app, db):
             knn_model, scaler = train_knn_model()
 
             if knn_model is None:
-                return jsonify({'error': 'There are not enough records in the database for the prediction to complete.'}), 400
+                return jsonify(
+                    {'error': 'There are not enough records in the database for the prediction to complete.'}), 500
 
             features = np.array(features).reshape(1, -1)
 
