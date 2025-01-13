@@ -171,8 +171,11 @@ def register_routes(app, db):
                 if seed_class < 0 or seed_class > 3:
                     raise ValueError("Seed class is incorrect")
 
-            except (ValueError, KeyError):
-                return jsonify({'error': 'Invalid data'}), 400
+            except KeyError:
+                return jsonify({"error": "Missing required parameters"}), 400
+
+            except ValueError:
+                return jsonify({"error": "Invalid data"}), 400
 
             max_id = db.session.query(db.func.max(Seed.seed_id)).scalar()
 
@@ -181,17 +184,20 @@ def register_routes(app, db):
             else:
                 max_id = max_id + 1
 
-            new_seed = Seed(seed_id=max_id, area=area, perimeter=perimeter, compactness=compactness,
-                            kernel_length=kernel_length,
-                            kernel_width=kernel_width, asymmetry_coefficient=asymmetry_coefficient,
-                            kernel_groove_length=kernel_groove_length, seed_class=seed_class)
+            new_seed = Seed(seed_id=max_id,
+                            area=round(area, 4),
+                            perimeter=round(perimeter, 4),
+                            compactness=round(compactness, 4),
+                            kernel_length=round(kernel_length, 4),
+                            kernel_width=round(kernel_width, 4),
+                            asymmetry_coefficient=round(asymmetry_coefficient, 4),
+                            kernel_groove_length=round(kernel_groove_length, 4),
+                            seed_class=seed_class)
 
             db.session.add(new_seed)
             db.session.commit()
 
             return jsonify({'seed_id': new_seed.seed_id}), 200
-        else:
-            flask.abort(400)
 
     @app.route('/api/data/<int:record_id>', methods=['DELETE'])
     def api_delete(record_id):
@@ -211,13 +217,13 @@ def register_routes(app, db):
 
         try:
             features = [
-                float(request.args['area']),
-                float(request.args['perimeter']),
-                float(request.args['compactness']),
-                float(request.args['kernel_length']),
-                float(request.args['kernel_width']),
-                float(request.args['asymmetry_coefficient']),
-                float(request.args['kernel_groove_length']),
+              round(float(request.args['area']),4),
+                round(float(request.args['perimeter']),4),
+                round(float(request.args['compactness']),4),
+                round(float(request.args['kernel_length']),4),
+                round(float(request.args['kernel_width']),4),
+                round(float(request.args['asymmetry_coefficient']),4),
+                round(float(request.args['kernel_groove_length']),4),
             ]
 
             if features[0] < 0:
@@ -237,7 +243,7 @@ def register_routes(app, db):
 
             if knn_model is None:
                 return jsonify(
-                    {'error': 'There are not enough records in the database for the prediction to complete.'}), 500
+                    {'error': 'There are not enough records in the database for the prediction to proceed.'}), 500
 
             features = np.array(features).reshape(1, -1)
 

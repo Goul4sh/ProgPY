@@ -1,30 +1,23 @@
-import os
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from sqlalchemy import create_engine, text
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 db = SQLAlchemy()
 
-
-def apply_migrations():
-    from flask_migrate import init, migrate, upgrade
-
-    migrations_dir = os.path.join(os.getcwd(), "migrations")
-    if not os.path.exists(migrations_dir):
-        init()
-    migrate(message="Automated migration update")
-    upgrade()
-
-
 def create_app():
-    app = Flask(__name__, template_folder='templates')
+
+    engine = create_engine('postgresql://postgres:haslo@localhost:5432/postgres')
+    db_name = 'assgdb'
+    with engine.connect() as connection:
+        result = connection.execute(text(f"Select 1 from pg_database WHERE datname = '{db_name}'"))
+        if not result.fetchone():
+            connection.execute(text("COMMIT"))
+            connection.execute(text(f"CREATE DATABASE {db_name}"))
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:haslo@localhost:5432/assgdb'
 
     db.init_app(app)
-    # migrate = Migrate(app, db)
 
     from routes import register_routes
     register_routes(app, db)
@@ -34,7 +27,6 @@ def create_app():
             db.create_all()
             db.session.commit()
 
-            apply_migrations()
         except Exception as e:
             print(e)
     return app

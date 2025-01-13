@@ -1,6 +1,5 @@
 from app import db
 
-
 class Seed(db.Model):
 
     __tablename__ = 'seeds'
