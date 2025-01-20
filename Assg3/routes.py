@@ -51,14 +51,7 @@ def register_routes(app, db):
             except (ValueError, KeyError):
                 flask.abort(400)
 
-            max_id = db.session.query(db.func.max(Seed.seed_id)).scalar()
-
-            if max_id is None:
-                max_id = 1
-            else:
-                max_id = max_id + 1
-
-            new_seed = Seed(seed_id=max_id, area=area, perimeter=perimeter, compactness=compactness,
+            new_seed = Seed(area=area, perimeter=perimeter, compactness=compactness,
                             kernel_length=kernel_length,
                             kernel_width=kernel_width, asymmetry_coefficient=asymmetry_coefficient,
                             kernel_groove_length=kernel_groove_length, seed_class=seed_class)
@@ -66,11 +59,7 @@ def register_routes(app, db):
             db.session.add(new_seed)
             db.session.commit()
 
-            return redirect(url_for('index')), 200
-
-
-        else:
-            return render_template('add.html')
+            return redirect('/')
 
     @app.route('/delete/<int:id>', methods=['POST'])
     def delete(id):
@@ -83,7 +72,7 @@ def register_routes(app, db):
         else:
             db.session.delete(seed)
             db.session.commit()
-            return redirect(url_for('index')), 200
+            return redirect(url_for('index'))
 
     @app.route('/predict', methods=['GET', 'POST'])
     def predict():
@@ -177,15 +166,7 @@ def register_routes(app, db):
             except ValueError:
                 return jsonify({"error": "Invalid data"}), 400
 
-            max_id = db.session.query(db.func.max(Seed.seed_id)).scalar()
-
-            if max_id is None:
-                max_id = 1
-            else:
-                max_id = max_id + 1
-
-            new_seed = Seed(seed_id=max_id,
-                            area=round(area, 4),
+            new_seed = Seed(area=round(area, 4),
                             perimeter=round(perimeter, 4),
                             compactness=round(compactness, 4),
                             kernel_length=round(kernel_length, 4),
